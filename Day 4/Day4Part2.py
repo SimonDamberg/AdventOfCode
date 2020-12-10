@@ -1,6 +1,7 @@
 requiredFields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
 noValidPassports = 0
 
+# Veru ugly, worst implementation yet
 def checkValidField(field, value):
     if field == "byr":
         return int(value) >= 1920 and int(value) <= 2002
