@@ -3,20 +3,41 @@ noValidPassports = 0
 
 def checkValidField(field, value):
     if field == "byr":
-        return value >= 1920 and value <= 2002
+        return int(value) >= 1920 and int(value) <= 2002
     elif field == "iyr":
-        return value >= 2010 and value <= 2020
+        return int(value) >= 2010 and int(value) <= 2020
     elif field == "eyr":
-        return value >= 2020 and value <= 2030
-    #elif field == "hgt":
-    #???
-    #    isValid == help
-    #elif field == "hcl": # ???
-    #    isValid = isValid && value >= 2020 && value <= 2030
+        return int(value) >= 2020 and int(value) <= 2030
+    elif field == "hgt":
+        metric = value[-2:]
+        if metric == "cm":
+            return int(value[:-2]) >= 150 and int(value[:-2]) <= 193
+        elif metric == "in":
+            return int(value[:-2]) >= 59 and int(value[:-2]) <= 76
+        else:
+            return False
+    elif field == "hcl":
+        metric = value[0]
+        if metric == "#":
+            if len(value[1:]) == 6:
+                allValid = True
+                for char in value[1:]:
+                    digitValid = char.isdigit() and int(char) >= 0
+                    charValid = char in ["a", "b", "c", "d", "e", "f"]
+                    validChar = digitValid or charValid
+                    allValid = allValid and validChar
+                return allValid
+            else:
+                return False
+        else:
+            return False
     elif field == "ecl": #
         return value in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
     elif field == "pid":
-        return len(value)==9
+        isValid = len(value)==9
+        for num in value:
+            isValid = isValid and num.isdigit()
+        return isValid
 
 with open("input.txt") as file:
     currentBatch = ""
@@ -25,36 +46,33 @@ with open("input.txt") as file:
             currentBatch = currentBatch.rstrip().split()
             presentFields = []
             for field in currentBatch:
-                presentFields.append(field.split(":")[0])
-            try:
-                presentFields.remove("cid")
-            except:
-                pass
+                if "cid" not in field.split(":")[0]:
+                    presentFields.append(field)
             if len(presentFields) == len(requiredFields):
                 isValid = True;
                 for n in range(len(presentFields)):
-                    currField = presentFields[n]
-                    value = currentBatch[n].split(":")[1]
-                    print(value)
+                    currField = presentFields[n].split(":")[0]
+                    value = presentFields[n].split(":")[1]
                     isValid = isValid and checkValidField(currField, value)
-                if isValid:
+                if isValid == True:
                     noValidPassports += 1
 
             currentBatch = ""
         else:
             currentBatch += line
-    #Do again since it skips the last.
-    #Bad implementation but don't know how to check if line is the last one
+    #Do again since it skips the last. Bad implementation
     currentBatch = currentBatch.rstrip().split()
     presentFields = []
     for field in currentBatch:
-        presentFields.append(field.split(":")[0])
-
-    try:
-        presentFields.remove("cid")
-    except:
-        pass
+        if "cid" not in field.split(":")[0]:
+            presentFields.append(field)
     if len(presentFields) == len(requiredFields):
-        noValidPassports += 1
+        isValid = True;
+        for n in range(len(presentFields)):
+            currField = presentFields[n].split(":")[0]
+            value = presentFields[n].split(":")[1]
+            isValid = checkValidField(currField, value)
+        if isValid == True:
+            noValidPassports += 1
 
     print(noValidPassports)
