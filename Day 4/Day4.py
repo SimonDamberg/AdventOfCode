@@ -1,6 +1,3 @@
-requiredFields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
-noValidPassports = 0
-
 # Veru ugly, worst implementation yet
 def checkValidField(field, value):
     if field == "byr":
@@ -41,39 +38,24 @@ def checkValidField(field, value):
         return isValid
 
 with open("input.txt") as file:
-    currentBatch = ""
-    for line in file:
-        if line == "\n":
-            currentBatch = currentBatch.rstrip().split()
-            presentFields = []
-            for field in currentBatch:
-                if "cid" not in field.split(":")[0]:
-                    presentFields.append(field)
-            if len(presentFields) == len(requiredFields):
-                isValid = True;
-                for n in range(len(presentFields)):
-                    currField = presentFields[n].split(":")[0]
-                    value = presentFields[n].split(":")[1]
-                    isValid = isValid and checkValidField(currField, value)
-                if isValid == True:
-                    noValidPassports += 1
+    lines = file.read().split("\n\n")
 
-            currentBatch = ""
-        else:
-            currentBatch += line
-    #Do again since it skips the last. Bad implementation
-    currentBatch = currentBatch.rstrip().split()
+noValidPassportsPart1 = 0
+noValidPassportsPart2 = 0
+for batch in lines:
     presentFields = []
-    for field in currentBatch:
+    for field in batch.rstrip().split():
         if "cid" not in field.split(":")[0]:
             presentFields.append(field)
-    if len(presentFields) == len(requiredFields):
+    if len(presentFields) == 7:
+        noValidPassportsPart1 += 1
         isValid = True;
         for n in range(len(presentFields)):
             currField = presentFields[n].split(":")[0]
             value = presentFields[n].split(":")[1]
-            isValid = checkValidField(currField, value)
+            isValid = isValid and checkValidField(currField, value)
         if isValid == True:
-            noValidPassports += 1
+                noValidPassportsPart2 += 1
 
-    print(noValidPassports)
+print("Part 1: " + str(noValidPassportsPart1))
+print("Part 2: " + str(noValidPassportsPart2))
