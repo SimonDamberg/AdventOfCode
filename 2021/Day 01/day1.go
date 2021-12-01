@@ -8,8 +8,8 @@ import (
 	"strconv"
 )
 
-func main() {
-	file, err := os.Open("day1.txt")
+func ReadFileToInt(fileName string) []int {
+	file, err := os.Open(fileName)
 	defer file.Close()
 
 	if err != nil {
@@ -25,7 +25,11 @@ func main() {
 		}
 		lines = append(lines, val)
 	}
+	return lines
+}
 
+func main() {
+	lines := ReadFileToInt("day1.txt")
 	var noIncreases int = 0
 	var noIncreases2 int = 0
 	for i, v := range lines {
