@@ -41,5 +41,5 @@ func main() {
 		}
 	}
 	fmt.Printf("Part1: %d\n", noIncreases)
-	fmt.Printf("Part2: %d", noIncreases2)
+	fmt.Printf("Part2: %d\n", noIncreases2)
 }
