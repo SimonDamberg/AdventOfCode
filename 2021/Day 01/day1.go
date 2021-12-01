@@ -26,10 +26,6 @@ func main() {
 		lines = append(lines, val)
 	}
 
-	var prev1 int = 0
-	var prev2 int = 0
-	var prev3 int = 0
-
 	var noIncreases int = 0
 	var noIncreases2 int = 0
 	for i, v := range lines {
@@ -39,13 +35,10 @@ func main() {
 			}
 		}
 		if i >= 3 {
-			if v+prev2+prev3 > prev1+prev2+prev3 {
+			if v+lines[i-1]+lines[i-2] > lines[i-1]+lines[i-2]+lines[i-3] {
 				noIncreases2++
 			}
 		}
-		prev1 = prev2
-		prev2 = prev3
-		prev3 = v
 	}
 	fmt.Printf("Part1: %d\n", noIncreases)
 	fmt.Printf("Part2: %d", noIncreases2)
