@@ -114,7 +114,34 @@ func part2(lines []string) int64 {
 	scrubberInt, _ := strconv.ParseInt(scrubber[0], 2, 64)
 	return oxygenInt * scrubberInt
 }
+
+func part1(lines []string) int64 {
+	var gamma, epsilon string
+	for i := 0; i < len(lines[0]); i++ {
+		ones, zeros := 0, 0
+
+		for j := 0; j < len(lines); j++ {
+			if lines[j][i] == '1' {
+				ones++
+			} else {
+				zeros++
+			}
+		}
+		if ones >= zeros {
+			gamma += "1"
+			epsilon += "0"
+		} else {
+			gamma += "0"
+			epsilon += "1"
+		}
+	}
+	gammaInt, _ := strconv.ParseInt(string(gamma), 2, 64)
+	epsilonInt, _ := strconv.ParseInt(string(epsilon), 2, 64)
+	return gammaInt * epsilonInt
+}
+
 func main() {
 	lines := ReadFileToStr("day3.txt")
+	log.Printf("Part 1: %d", part1(lines))
 	log.Printf("Part 2: %d", part2(lines))
 }
