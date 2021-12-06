@@ -41,7 +41,6 @@ func getTotalFish(fish []int) int {
 }
 
 func main() {
-
 	// Init fish
 	startingNums := ParseNums("day6.txt")
 	fish := make([]int, len(startingNums))
