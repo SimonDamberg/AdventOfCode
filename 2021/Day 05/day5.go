@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"log"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -66,31 +67,21 @@ func part1(input [][]int) int {
 	var result [1000][1000]int
 
 	for _, v := range input {
+		xMax := int(math.Max(float64(v[0]), float64(v[2])))
+		xMin := int(math.Min(float64(v[0]), float64(v[2])))
+		yMax := int(math.Max(float64(v[1]), float64(v[3])))
+		yMin := int(math.Min(float64(v[1]), float64(v[3])))
+
 		if v[0] == v[2] {
-			if v[1] < v[3] {
-				for i := v[1]; i <= v[3]; i++ {
-					result[i][v[0]] = result[i][v[0]] + 1
-				}
-			} else {
-				for i := v[3]; i <= v[1]; i++ {
-					result[i][v[0]] = result[i][v[0]] + 1
-				}
+			for y := yMin; y <= yMax; y++ {
+				result[y][v[0]] += 1
 			}
 		} else if v[1] == v[3] {
-			if v[0] < v[2] {
-				for i := v[0]; i <= v[2]; i++ {
-					result[v[1]][i] = result[v[1]][i] + 1
-				}
-			} else {
-				for i := v[2]; i <= v[0]; i++ {
-					result[v[1]][i] = result[v[1]][i] + 1
-				}
+			for x := xMin; x <= xMax; x++ {
+				result[v[1]][x] += 1
 			}
 		}
 	}
-
-	log.Printf("%v", result)
-
 	return countCross(result)
 }
 
@@ -98,34 +89,35 @@ func part2(input [][]int) int {
 	var result [1000][1000]int
 
 	for _, v := range input {
-		// Only horizontal or vertical
+		xMax := int(math.Max(float64(v[0]), float64(v[2])))
+		xMin := int(math.Min(float64(v[0]), float64(v[2])))
+		yMax := int(math.Max(float64(v[1]), float64(v[3])))
+		yMin := int(math.Min(float64(v[1]), float64(v[3])))
+
+		diffX := int(math.Abs(float64(xMax - xMin)))
+
 		if v[0] == v[2] {
-			if v[1] < v[3] {
-				for i := v[1]; i <= v[3]; i++ {
-					result[i][v[0]] = result[i][v[0]] + 1
-				}
-			} else {
-				for i := v[3]; i <= v[1]; i++ {
-					result[i][v[0]] = result[i][v[0]] + 1
-				}
+			for y := yMin; y <= yMax; y++ {
+				result[y][v[0]] += 1
 			}
 		} else if v[1] == v[3] {
-			if v[0] < v[2] {
-				for i := v[0]; i <= v[2]; i++ {
-					result[v[1]][i] = result[v[1]][i] + 1
-				}
-			} else {
-				for i := v[2]; i <= v[0]; i++ {
-					result[v[1]][i] = result[v[1]][i] + 1
-				}
+			for x := xMin; x <= xMax; x++ {
+				result[v[1]][x] += 1
+			}
+		} else {
+			// Diagonal
+			coeffX, coeffY := 1, 1
+			if v[0] > v[2] {
+				coeffX = -1
+			}
+			if v[1] > v[3] {
+				coeffY = -1
+			}
+			for i := 0; i <= diffX; i++ {
+				result[coeffY*i+v[1]][coeffX*i+v[0]] += 1
 			}
 		}
-		// TODO diagonal 45 degrees
-
 	}
-
-	log.Printf("%v", result)
-
 	return countCross(result)
 }
 
