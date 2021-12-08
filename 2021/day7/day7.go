@@ -57,10 +57,8 @@ func checkFuelCostPart1(numbers []int, location int) int {
 func checkFuelCostPart2(numbers []int, location int) int {
 	var totalFuel int
 	for _, v := range numbers {
-		steps := math.Abs(float64(location - v))
-		for i := 0; i <= int(steps); i++ {
-			totalFuel += 1 * i
-		}
+		steps := int(math.Abs(float64(location - v)))
+		totalFuel += steps * (steps + 1) / 2
 	}
 	return totalFuel
 }
