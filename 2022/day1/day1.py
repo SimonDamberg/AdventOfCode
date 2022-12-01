@@ -1,22 +1,9 @@
 # Parse input.txt
 elfs = []
-with open("input.txt") as f:
-    current_cal = 0
-    # Iterate line by line
-    for line in f:
-        if line == "":
-            # EOF
-            elfs.append(current_cal)
-
-        line = line.replace("\n", "")
-        if line == "":
-            # End of current elf
-            elfs.append(current_cal)
-            current_cal = 0
-        else:
-            # Still at an elf
-            current_cal += int(line)
-    f.close()
+with open("input.txt", "r") as f:
+    chunks = f.read().split("\n\n")
+    for chunk in chunks:
+        elfs.append(sum([int(x) for x in chunk.split("\n")]))
 
 # Part 1: Find max elf
 max_elf = max(elfs)
