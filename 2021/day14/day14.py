@@ -1,3 +1,5 @@
+import collections
+
 with open("day14.txt", "r") as f:
     lines = [line.strip() for line in f.readlines()]
 
@@ -8,25 +10,36 @@ for rule in rules:
     rule_dict[rule[0:2]] = rule[6:]
 
 def get_seq(iterations, seq):
-    new_seq = seq
+    pairs_counter = collections.Counter()
+    char_counter = collections.Counter()
+
+    # Save intial chars to counter
+    for c in seq:
+        char_counter[c] += 1
+
+    # Save intital pairs to counter
+    for i in range(len(seq)-1):
+        pairs_counter[seq[i:i+2]] += 1
+        
     for _ in range(iterations):
-        seq = new_seq
-        new_seq = seq[0] # reset new_seq
-        for i in range(0, len(seq)-1):
-            pair = seq[i]+seq[i+1]
-            if pair in rule_dict:
-                new_seq += rule_dict[pair] + seq[i+1] 
+        # Aux counter to keep track of new pairs this iteration
+        new_pairs = collections.Counter()
+        
+        # Check for new pairings 
+        for pair, v in pairs_counter.items():
+            new_char = rule_dict[pair]
 
-    occurence = {}
-    for char in new_seq:
-        if char in occurence:
-            occurence[char] += 1
-        else:
-            occurence[char] = 1
-    max_occurence = max(occurence.values())
-    min_occurence = min(occurence.values())
-    return max_occurence-min_occurence
+            # Add new pairings to counter            
+            new_pairs[pair[0]+new_char] += v
+            new_pairs[new_char+pair[1]] += v
 
-# Count occurence of each char
+            # Add the new character
+            char_counter[new_char] += v
+
+        pairs_counter = new_pairs
+    
+    occ = sorted(char_counter.values())
+    return occ[-1] - occ[0]
+
 print(f"Part 1: {get_seq(10, seq)}")
 print(f"Part 2: {get_seq(40, seq)}")
