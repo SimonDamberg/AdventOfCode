@@ -17,18 +17,8 @@ def get_value(monkey):
     if monkey in nums:
         return nums[monkey]
     else:
-        if "+" in waiting[monkey]:
-            a, b = waiting[monkey].split(" + ")
-            nums[monkey] = get_value(a) + get_value(b)
-        elif "-" in waiting[monkey]:
-            a, b = waiting[monkey].split(" - ")
-            nums[monkey] = get_value(a) - get_value(b)
-        elif "*" in waiting[monkey]:
-            a, b = waiting[monkey].split(" * ")
-            nums[monkey] = get_value(a) * get_value(b)
-        else:
-            a, b = waiting[monkey].split(" / ")
-            nums[monkey] = get_value(a) / get_value(b)
+        a, op, b = waiting[monkey].split(" ")
+        nums[monkey] = eval(f"{get_value(a)} {op} {get_value(b)}")
         return nums[monkey]
 
 nums, waiting, root_1, root_2 = parse_file()
@@ -36,12 +26,12 @@ print(f"Part 1: {int(get_value(root_1) + get_value(root_2))}")
 
 def is_humn_in_sequence(root):
     if root == "humn":
-        return True
+        return 1
     else:
-        found = False
+        found = 0
         if root in waiting:
             for node in [waiting[root].split(" ")[0], waiting[root].split(" ")[2]]:
-                found = found or is_humn_in_sequence(node)
+                found += is_humn_in_sequence(node)
         return found
 
 def find_humn(wanted, monkey):
@@ -50,26 +40,23 @@ def find_humn(wanted, monkey):
     elif monkey in nums:
         return nums[monkey]
     else:
-        if "+" in waiting[monkey]:
-            a, b = waiting[monkey].split(" + ")
+        a, op, b = waiting[monkey].split(" ")
+        if op == "+":
             if is_humn_in_sequence(a):
                 nums[monkey] = find_humn(wanted-get_value(b), a)
             else:
                 nums[monkey] = find_humn(wanted-get_value(a), b)
-        elif "-" in waiting[monkey]:
-            a, b = waiting[monkey].split(" - ")
+        elif op == "-":
             if is_humn_in_sequence(a):
                 nums[monkey] = find_humn(wanted+get_value(b), a)
             else:
                 nums[monkey] = find_humn(get_value(a)-wanted, b)
-        elif "*" in waiting[monkey]:
-            a, b = waiting[monkey].split(" * ")
+        elif op == "*":
             if is_humn_in_sequence(a):
                 nums[monkey] = find_humn(wanted/get_value(b), a)
             else:
                 nums[monkey] = find_humn(wanted/get_value(a), b)
         else:
-            a, b = waiting[monkey].split(" / ")
             if is_humn_in_sequence(a):
                 nums[monkey] = find_humn(wanted*get_value(b), a)
             else:
