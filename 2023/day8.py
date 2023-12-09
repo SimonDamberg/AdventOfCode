@@ -58,12 +58,7 @@ def solve_part_2(input, test_case=True):
             instr_idx = (instr_idx + 1) % len(instructions)
             steps += 1
         steps_to_Z.append(steps)
-
-    # answer is LCM of all paths to Z
-    lcm = steps_to_Z[0]
-    for i in steps_to_Z[1:]:
-        lcm = lcm * i // math.gcd(lcm, i)
-    answer = lcm
+    answer = math.lcm(*steps_to_Z)
 
     if test_case:
         print(f'(TEST) Part 2: {answer}')
