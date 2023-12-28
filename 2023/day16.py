@@ -78,6 +78,7 @@ def solve_part_1(input, test_case=True):
     energised = set()
     seen = set()
     while beams: 
+        display_grid_with_turtle(grid, energised, beams)
         # get next beam
         beam = beams.popleft()
 
